@@ -3,6 +3,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Card } from '../components/common/UI'
 import { useAuth } from '../context/AuthContext'
+import darHeroImg from '../assets/dar-hero.png'
 
 const features = [
   { icon: '🎯', title: 'Path A — I have an idea', desc: 'Tell us your business idea and location. Get a success probability, expected monthly profit, ROI, and break-even time.' },
@@ -25,34 +26,36 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section style={{
-        background: 'linear-gradient(135deg, var(--clr-primary-dark) 0%, var(--clr-primary) 100%)',
+        backgroundImage: `linear-gradient(180deg, rgba(20,16,10,0.62) 0%, rgba(20,16,10,0.40) 38%, rgba(20,16,10,0.50) 68%, rgba(20,16,10,0.74) 100%), url(${darHeroImg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 60%',
+        backgroundRepeat: 'no-repeat',
         padding: 'var(--space-16) 0',
         position: 'relative', overflow: 'hidden',
       }}>
-        {/* Decorative circle */}
-        <div style={{
-          position: 'absolute', top: '-80px', right: '-80px',
-          width: '400px', height: '400px', borderRadius: '50%',
-          background: 'rgba(255,255,255,0.04)', pointerEvents: 'none',
-        }} />
-
-        <div className="container animate-fadeUp" style={{ textAlign: 'center', color: '#fff' }}>
+        <div className="container animate-fadeUp" style={{ textAlign: 'center', color: '#fff', position: 'relative', zIndex: 1 }}>
           <div style={{
-            display: 'inline-block', background: 'rgba(232,168,56,0.2)',
+            display: 'inline-block', background: 'rgba(232,168,56,0.24)',
             color: 'var(--clr-accent)', padding: '6px 18px',
             borderRadius: '99px', fontSize: '13px', fontWeight: 700,
             marginBottom: 'var(--space-5)', letterSpacing: '.5px',
+            border: '1px solid rgba(232,168,56,0.35)',
+            backdropFilter: 'blur(6px)',
           }}>
             POWERED BY REAL TANZANIAN BUSINESS DATA
           </div>
 
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: '#fff', marginBottom: 'var(--space-5)' }}>
+          <h1 style={{
+            fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: '#fff', marginBottom: 'var(--space-5)',
+            textShadow: '0 2px 18px rgba(0,0,0,0.45)',
+          }}>
             Your Dar es Salaam<br />Business Advisor
           </h1>
 
           <p style={{
-            fontSize: '1.15rem', color: 'rgba(255,255,255,0.80)',
+            fontSize: '1.15rem', color: 'rgba(255,255,255,0.92)',
             maxWidth: '560px', margin: '0 auto var(--space-8)',
+            textShadow: '0 1px 12px rgba(0,0,0,0.4)',
           }}>
             Find out if your business idea will succeed — or discover what business
             to start — based on real data from 33,000+ enterprises across Dar es Salaam.
@@ -64,7 +67,7 @@ export default function Home() {
             </Button>
             {!user && (
               <Button variant="ghost" size="lg"
-                style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}
+                style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(6px)' }}
                 onClick={() => navigate('/register')}
               >
                 Create Premium Account
