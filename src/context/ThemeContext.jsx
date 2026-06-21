@@ -16,6 +16,18 @@ const THEMES = {
     '--clr-navbar':       'rgba(240,240,240,0.95)',
     '--shadow-sm':        '0 1px 4px rgba(0,0,0,0.10)',
     '--shadow-md':        '0 4px 16px rgba(0,0,0,0.12)',
+    '--clay-highlight':   'rgba(255,255,255,0.65)',
+    '--clay-shadow-soft': 'rgba(0,0,0,0.10)',
+    '--clay-shadow-deep': 'rgba(0,0,0,0.16)',
+    // Navbar clay-glass surface — dark clay tone (grey/dark themes
+    // share this; light gets its own lighter variant below).
+    '--navbar-clay-bg':      'rgba(58, 60, 66, 0.62)',
+    '--navbar-clay-bg-soft': 'rgba(58, 60, 66, 0.40)',
+    '--navbar-clay-edge':    'rgba(255, 255, 255, 0.10)',
+    '--navbar-clay-inset':   'inset 0 1px 1px rgba(255,255,255,0.14), inset 0 -6px 14px rgba(0,0,0,0.22)',
+    '--navbar-clay-shadow':  '0 10px 30px rgba(20,20,24,0.28), 0 2px 8px rgba(20,20,24,0.18)',
+    '--navbar-ink':          '#F3F2EF',
+    '--navbar-ink-dim':      'rgba(243,242,239,0.62)',
   },
   light: {
     '--clr-bg':           '#F9FAFB',
@@ -28,6 +40,18 @@ const THEMES = {
     '--clr-navbar':       'rgba(255,255,255,0.95)',
     '--shadow-sm':        '0 1px 3px rgba(0,0,0,0.08)',
     '--shadow-md':        '0 4px 16px rgba(0,0,0,0.10)',
+    '--clay-highlight':   'rgba(255,255,255,0.85)',
+    '--clay-shadow-soft': 'rgba(0,0,0,0.07)',
+    '--clay-shadow-deep': 'rgba(0,0,0,0.12)',
+    // Lighter, warmer clay so the navbar sits naturally on a white
+    // page instead of reading as a dark patch.
+    '--navbar-clay-bg':      'rgba(120, 116, 108, 0.30)',
+    '--navbar-clay-bg-soft': 'rgba(120, 116, 108, 0.16)',
+    '--navbar-clay-edge':    'rgba(255, 255, 255, 0.55)',
+    '--navbar-clay-inset':   'inset 0 1px 1px rgba(255,255,255,0.65), inset 0 -6px 14px rgba(60,55,45,0.07)',
+    '--navbar-clay-shadow':  '0 10px 26px rgba(60,55,45,0.10), 0 2px 8px rgba(60,55,45,0.08)',
+    '--navbar-ink':          '#2B2A27',
+    '--navbar-ink-dim':      'rgba(43,42,39,0.58)',
   },
   dark: {
     '--clr-bg':           '#0F1117',
@@ -40,6 +64,19 @@ const THEMES = {
     '--clr-navbar':       'rgba(15,17,23,0.97)',
     '--shadow-sm':        '0 1px 4px rgba(0,0,0,0.40)',
     '--shadow-md':        '0 4px 20px rgba(0,0,0,0.50)',
+    // Claymorphism on dark surfaces needs a lighter, dimmer highlight
+    // (lighter than the surface, not blown out) and a deeper shadow,
+    // or the puffy effect washes out against an already-dark page.
+    '--clay-highlight':   'rgba(255,255,255,0.06)',
+    '--clay-shadow-soft': 'rgba(0,0,0,0.45)',
+    '--clay-shadow-deep': 'rgba(0,0,0,0.65)',
+    '--navbar-clay-bg':      'rgba(58, 60, 66, 0.62)',
+    '--navbar-clay-bg-soft': 'rgba(58, 60, 66, 0.40)',
+    '--navbar-clay-edge':    'rgba(255, 255, 255, 0.10)',
+    '--navbar-clay-inset':   'inset 0 1px 1px rgba(255,255,255,0.14), inset 0 -6px 14px rgba(0,0,0,0.22)',
+    '--navbar-clay-shadow':  '0 10px 30px rgba(20,20,24,0.28), 0 2px 8px rgba(20,20,24,0.18)',
+    '--navbar-ink':          '#F3F2EF',
+    '--navbar-ink-dim':      'rgba(243,242,239,0.62)',
   },
 }
 

@@ -8,20 +8,23 @@ export function Button({
 }) {
   const base = {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    gap: '8px', borderRadius: 'var(--radius-sm)', fontWeight: 600,
+    gap: '8px', borderRadius: 'var(--radius-lg)', fontWeight: 600,
     border: 'none', transition: 'var(--transition)',
     cursor: disabled || loading ? 'not-allowed' : 'pointer',
     opacity: disabled || loading ? 0.6 : 1,
     width: fullWidth ? '100%' : 'auto',
     whiteSpace: 'nowrap',
   }
+  // Claymorphic surfaces: a puffy, molded look (var(--clay-raised) via
+  // .clay-btn class) replaces flat drop-shadows. Color variants now only
+  // set background/text — the clay shadow does the lifting visually.
   const variants = {
-    primary:   { background: 'var(--clr-primary)',    color: '#fff', boxShadow: '0 2px 8px rgba(13,110,110,0.25)' },
+    primary:   { background: 'var(--clr-primary)',    color: '#fff' },
     secondary: { background: 'var(--clr-primary-lt)', color: 'var(--clr-primary)' },
-    accent:    { background: 'var(--clr-accent)',      color: '#fff', boxShadow: '0 2px 8px rgba(232,168,56,0.30)' },
-    ghost:     { background: 'transparent', color: 'var(--clr-primary)', border: '1.5px solid var(--clr-primary)' },
+    accent:    { background: 'var(--clr-accent)',      color: '#fff' },
+    ghost:     { background: 'var(--clr-card)', color: 'var(--clr-primary)' },
     danger:    { background: 'var(--clr-danger)',      color: '#fff' },
-    subtle:    { background: 'var(--clr-bg-2)',        color: 'var(--clr-text-2)', border: '1px solid var(--clr-border)' },
+    subtle:    { background: 'var(--clr-bg-2)',        color: 'var(--clr-text-2)' },
   }
   const sizes = {
     xs: { padding: '4px 10px', fontSize: '12px' },
@@ -31,7 +34,7 @@ export function Button({
   }
   return (
     <button type={type} onClick={onClick} disabled={disabled || loading}
-      className={className}
+      className={`clay-btn ${className}`}
       style={{ ...base, ...variants[variant], ...sizes[size], ...style }}>
       {loading && <Spinner size={15} color="currentColor" />}
       {children}
@@ -56,13 +59,14 @@ export function Input({
         onChange={onChange} placeholder={placeholder}
         required={required} min={min} max={max} step={step}
         style={{
-          width: '100%', padding: '10px 14px', borderRadius: 'var(--radius-sm)',
-          border: `1.5px solid ${error ? 'var(--clr-danger)' : 'var(--clr-border)'}`,
-          fontSize: '15px', outline: 'none', transition: 'border-color var(--transition)',
-          background: 'var(--clr-card)', color: 'var(--clr-text)',
+          width: '100%', padding: '11px 14px', borderRadius: 'var(--radius-md)',
+          border: error ? '1.5px solid var(--clr-danger)' : 'none',
+          boxShadow: error ? 'var(--clay-pressed)' : 'var(--clay-inset)',
+          fontSize: '15px', outline: 'none', transition: 'box-shadow var(--transition)',
+          background: 'var(--clr-bg)', color: 'var(--clr-text)',
         }}
-        onFocus={e => e.target.style.borderColor = 'var(--clr-primary)'}
-        onBlur={e => e.target.style.borderColor = error ? 'var(--clr-danger)' : 'var(--clr-border)'}
+        onFocus={e => { if (!error) e.target.style.boxShadow = 'var(--clay-pressed)' }}
+        onBlur={e => { if (!error) e.target.style.boxShadow = 'var(--clay-inset)' }}
       />
       {hint  && <p style={{ fontSize: '12px', color: 'var(--clr-text-3)', lineHeight: 1.4 }}>{hint}</p>}
       {error && <p style={{ fontSize: '12px', color: 'var(--clr-danger)' }}>{error}</p>}
@@ -80,9 +84,10 @@ export function Select({ label, name, value, onChange, options = [], error, requ
       )}
       <select id={name} name={name} value={value} onChange={onChange} required={required}
         style={{
-          width: '100%', padding: '10px 14px', borderRadius: 'var(--radius-sm)',
-          border: `1.5px solid ${error ? 'var(--clr-danger)' : 'var(--clr-border)'}`,
-          fontSize: '15px', background: 'var(--clr-card)', color: 'var(--clr-text)', cursor: 'pointer',
+          width: '100%', padding: '11px 14px', borderRadius: 'var(--radius-md)',
+          border: error ? '1.5px solid var(--clr-danger)' : 'none',
+          boxShadow: error ? 'var(--clay-pressed)' : 'var(--clay-inset)',
+          fontSize: '15px', background: 'var(--clr-bg)', color: 'var(--clr-text)', cursor: 'pointer',
           outline: 'none',
         }}>
         {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -95,9 +100,8 @@ export function Select({ label, name, value, onChange, options = [], error, requ
 
 export function Card({ children, style = {}, className = '' }) {
   return (
-    <div className={className} style={{
-      background: 'var(--clr-card)', borderRadius: 'var(--radius-md)',
-      boxShadow: 'var(--shadow-sm)', border: '1px solid var(--clr-border)',
+    <div className={`clay-card ${className}`} style={{
+      background: 'var(--clr-card)', borderRadius: 'var(--radius-lg)',
       padding: 'var(--space-6)', ...style,
     }}>{children}</div>
   )
