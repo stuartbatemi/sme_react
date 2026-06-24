@@ -5,7 +5,9 @@
 import axios from 'axios'
 
 const node = axios.create({
-  baseURL: '/api',   // proxied to http://localhost:5000/api via vite.config.js
+  baseURL: import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/api`
+    : '/api',
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 })
@@ -67,7 +69,7 @@ export const userAPI = {
 
 // ── FastAPI direct (districts + activities list) ──────────────────
 const fastapi = axios.create({
-  baseURL: 'http://localhost:8000',
+ baseURL: import.meta.env.VITE_FASTAPI_URL || 'http://localhost:8000',
   timeout: 10000,
 })
 

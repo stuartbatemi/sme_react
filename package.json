@@ -1,5 +1,4 @@
-{
-  "name": "sme-advisory-app",
+{ "name": "sme-advisory-app",
   "private": true,
   "version": "1.0.0",
   "type": "module",
