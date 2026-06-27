@@ -9,6 +9,7 @@ import pathBThumb from '../assets/path-b-card-bg.jpg'
 
 const DISTRICTS = ['Ilala', 'Kigamboni', 'Kinondoni', 'Temeke', 'Ubungo']
 const MIN_CAPITAL = 20000
+const SUGGESTION_COUNT_OPTIONS = [3, 5, 8, 10]
 
 interface AdvisorForm {
   path_type: string
@@ -85,8 +86,8 @@ export default function AdvisorPage() {
         .slice(0, 8)
       setMatches(scored)
       if (!scored.length) setError('No matches found. Try simpler words like "food", "clothes", "repair".')
-    } catch (err: any) {
-      setError(err.response?.data?.error || err.response?.data?.detail || 'Could not reach the model server. Make sure it is running on port 8000.')
+    } catch {
+      setError('Could not reach the model server. Make sure it is running on port 8000.')
     } finally { setSearching(false) }
   }
 
@@ -185,9 +186,9 @@ export default function AdvisorPage() {
         </div>
       )}
 
-      {/* Step 1: Location */}
+      {/* Step 1: Location + Capital */}
       {step === 1 && (
-        <StepCard title="Where is your business?" step={1} total={user ? 2 : 3} onBack={() => setStep(0)}>
+        <StepCard title="Where is your business, and how much capital do you have?" step={1} total={user ? 2 : 3} onBack={() => setStep(0)}>
           <Select label="District" name="district" value={form.district} required
             onChange={e => set('district', e.target.value)}
             options={[{ value: '', label: 'Select district...' }, ...DISTRICTS.map(d => ({ value: d, label: d }))]}
@@ -199,19 +200,9 @@ export default function AdvisorPage() {
           <Input label="Village / Area (optional)" name="village" value={form.village}
             onChange={e => set('village', e.target.value)} placeholder="e.g. Kitunda" />
 
-          {user && (
-            <Alert type="info" message={`Using your profile details: age ${user.age || 'not set'}, gender ${user.gender || 'not set'}. Update these in your Dashboard profile.`} />
-          )}
-
-          <Button variant="primary" fullWidth disabled={!form.district} onClick={goFromLocation}>
-            {form.path_type === 'A' ? 'Continue →' : (user ? 'Get Recommendations →' : 'Continue →')}
-          </Button>
-        </StepCard>
-      )}
-
-      {/* Step 2: Personal details (guests only) */}
-      {step === 2 && !user && (
-        <StepCard title="Tell us about yourself" step={2} total={3} onBack={() => setStep(1)}>
+          {/* Capital is asked of EVERYONE here — it's specific to this
+              business query, not a fixed profile attribute, so it can't
+              be safely skipped just because someone is logged in. */}
           <Input label="Starting Capital (TZS)" name="capital_tzs" type="number"
             value={form.capital_tzs} min={MIN_CAPITAL}
             onChange={e => { set('capital_tzs', e.target.value); validateCapital(e.target.value) }}
@@ -219,6 +210,31 @@ export default function AdvisorPage() {
             hint="Leave blank if unknown — we'll show the typical capital required."
             error={capError}
           />
+
+          {form.path_type === 'B' && (
+            <Select label="Number of business suggestions" name="top_n"
+              value={String(form.top_n)}
+              onChange={e => set('top_n', parseInt(e.target.value, 10))}
+              options={SUGGESTION_COUNT_OPTIONS.map(n => ({ value: String(n), label: `${n} suggestions` }))}
+            />
+          )}
+
+          {user && (
+            <Alert type="info" message={`Using your profile details: age ${user.age || 'not set'}, gender ${user.gender || 'not set'}. Update these in your Dashboard profile.`} />
+          )}
+
+          <Button variant="primary" fullWidth disabled={!form.district || !!capError} onClick={goFromLocation}>
+            {form.path_type === 'A' ? 'Continue →' : (user ? 'Get Recommendations →' : 'Continue →')}
+          </Button>
+        </StepCard>
+      )}
+
+      {/* Step 2: Personal details (guests only — age/gender aren't asked
+          again for logged-in users since those are stored on the profile.
+          Capital is NOT asked here anymore — it moved to Step 1 above,
+          since it's needed by every user regardless of login state). */}
+      {step === 2 && !user && (
+        <StepCard title="Tell us about yourself" step={2} total={3} onBack={() => setStep(1)}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
             <Input label="Age" name="age" type="number" value={form.age}
               onChange={e => set('age', e.target.value)} placeholder="e.g. 28" min={16} max={100} />
@@ -227,15 +243,11 @@ export default function AdvisorPage() {
               options={[{ value: '', label: 'Prefer not to say' }, { value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }]}
             />
           </div>
-          <Button variant="primary" fullWidth disabled={!!capError} onClick={goFromPersonal}>
+          <Button variant="primary" fullWidth onClick={goFromPersonal}>
             {form.path_type === 'A' ? 'Continue →' : 'Get Recommendations →'}
           </Button>
         </StepCard>
       )}
-
-      {/* Step 2 for logged-in users who chose Path B and we call submit directly
-          — this step is skipped (handled in goFromLocation).
-          For logged-in Path A, we go to step 3 directly. */}
 
       {/* Step 3: Business idea search (Path A) */}
       {step === 3 && (
@@ -386,11 +398,14 @@ function PathAResult({ result, activityLabel }: { result: any, activityLabel: st
 
 function PathBResult({ result }: { result: any }) {
   const fmt = (n: any) => n ? Number(n).toLocaleString() : '—'
+  const count = result.recommendations?.length || 0
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'var(--space-4)' }}>
       <div>
         <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.4rem,3vw,1.8rem)', marginBottom:'var(--space-2)' }}>Your Recommended Business Ideas</h2>
-        <p style={{ color:'var(--clr-text-2)', fontSize:'14px' }}>Ranked by profit potential and competition level in your area.</p>
+        <p style={{ color:'var(--clr-text-2)', fontSize:'14px' }}>
+          {count} business {count === 1 ? 'idea' : 'ideas'} ranked by profit potential and competition level in your area.
+        </p>
       </div>
       {result.recommendations?.map((rec: any, i: number) => (
         <Card key={i} style={{ borderLeft:'4px solid var(--clr-primary)' }}>
