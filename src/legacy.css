@@ -180,18 +180,19 @@ input, select, textarea { font-family: var(--font-body); font-size: 1rem; }
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 14px var(--space-4) 0;
+  padding: 10px 16px 10px;
+  background: var(--clr-bg);
+  transition: background 0.25s ease;
 }
 
 .orin-navbar {
-  max-width: 1120px;
+  max-width: 1200px;
   margin: 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  height: 60px;
-  padding: 0 8px 0 8px;
+  height: 58px;
+  padding: 0 10px;
   border-radius: 999px;
   background: var(--navbar-clay-bg);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
@@ -231,6 +232,7 @@ input, select, textarea { font-family: var(--font-body); font-size: 1rem; }
   color: var(--navbar-ink);
   display: flex;
   align-items: baseline;
+  justify-content: center;
   gap: 1px;
   text-decoration: none;
   user-select: none;
@@ -303,10 +305,13 @@ input, select, textarea { font-family: var(--font-body); font-size: 1rem; }
   font-weight: 600;
   font-size: 15.5px;
   color: var(--navbar-ink);
-  padding: 12px 10px;
+  padding: 12px 20px;
   border-radius: 14px;
   text-decoration: none;
   transition: background 0.15s ease;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
 }
 .orin-drawer-link:hover {
   background: rgba(255,255,255,0.08);

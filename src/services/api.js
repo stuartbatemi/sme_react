@@ -67,16 +67,14 @@ export const userAPI = {
   stats:   ()     => node.get('/user/stats'),
 }
 
-// ── Model info (districts + activities) ────────────────────────────
-// These now go through the Node backend (/api/advisory/districts and
-// /api/advisory/activities) instead of calling FastAPI directly from
-// the browser. Node decides — based on the logged-in user's tier —
-// whether to proxy to the Regular model or Lonet 2.5 (Premium), so
-// Premium users searching for a business idea see Lonet 2.5's fuller
-// activity catalog (covers machinga, daladala, kandoro water sellers,
-// etc.) instead of always hitting the Regular model's catalog.
+// ── FastAPI direct (districts + activities list) ──────────────────
+const fastapi = axios.create({
+ baseURL: import.meta.env.VITE_FASTAPI_URL || 'http://localhost:8000',
+  timeout: 10000,
+})
+
 export const modelAPI = {
-  districts:  () => node.get('/advisory/districts'),
+  districts:  () => fastapi.get('/districts'),
   activities: (sector) =>
-    node.get('/advisory/activities', sector ? { params: { sector } } : {}),
+    fastapi.get('/activities', sector ? { params: { sector } } : {}),
 }

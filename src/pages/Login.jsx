@@ -39,7 +39,7 @@ export default function Login() {
             Welcome back
           </h1>
           <p style={{ color: 'var(--clr-text-2)' }}>
-            Log in to access your Premium history and reports.
+            Log in to continue with your business advice.
           </p>
         </div>
 
@@ -66,11 +66,9 @@ export default function Login() {
 
         <p style={{ textAlign: 'center', marginTop: 'var(--space-5)', fontSize: '14px', color: 'var(--clr-text-2)' }}>
           Don't have an account?{' '}
-          <Link to="/register" style={{ fontWeight: 600 }}>Sign up for Premium</Link>
+          <Link to="/register" style={{ fontWeight: 600 }}>Create a free account</Link>
         </p>
-        <p style={{ textAlign: 'center', marginTop: 'var(--space-3)', fontSize: '14px' }}>
-          <Link to="/advisor">Continue without an account →</Link>
-        </p>
+
       </div>
     </div>
   )

@@ -1,13 +1,13 @@
 // src/pages/AdvisorPage.tsx
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { advisoryAPI, modelAPI } from '../services/api'
 import { Button, Input, Select, Card, Spinner, Alert, Badge } from '../components/common/UI'
 import { PathCard } from '../components/ui/path-card'
+import DistrictMapPicker from '../components/ui/DistrictMapPicker'
 import pathAThumb from '../assets/path-a-card-bg.jpg'
 import pathBThumb from '../assets/path-b-card-bg.jpg'
-
-const DISTRICTS = ['Ilala', 'Kigamboni', 'Kinondoni', 'Temeke', 'Ubungo']
 const MIN_CAPITAL = 20000
 const SUGGESTION_COUNT_OPTIONS = [3, 5, 8, 10]
 
@@ -32,7 +32,14 @@ const emptyForm: AdvisorForm = {
 }
 
 export default function AdvisorPage() {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
+  const isPremium = user?.tier === 'premium'
+  const navigate = useNavigate()
+
+  // Require login — guests go to register
+  useEffect(() => {
+    if (!authLoading && user === null) navigate('/register', { replace: true })
+  }, [user, authLoading, navigate])
 
   const [step,      setStep]      = useState(0)
   const [form,      setForm]      = useState<AdvisorForm>(emptyForm)
@@ -147,8 +154,41 @@ export default function AdvisorPage() {
     else submitPrediction()
   }
 
+  // Show spinner while auth is resolving — prevents blank flash
+  if (authLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <Spinner size={40} />
+      </div>
+    )
+  }
+
   return (
-    <div style={{ padding: 'var(--space-8) var(--space-4)', maxWidth: 680, margin: '0 auto' }}>
+    <div>
+      {/* Upgrade banner for regular users */}
+      {!isPremium && (
+        <div style={{
+          background: 'linear-gradient(135deg, #0D3D3D 0%, #0a2a2a 100%)',
+          borderBottom: '1px solid rgba(232,168,56,0.30)',
+          padding: '10px 24px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: 16, flexWrap: 'wrap',
+        }}>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.80)', margin: 0 }}>
+            ✨ <strong style={{ color: '#E8A838' }}>ORin LoNet 2.5</strong> — faster & sharper predictions available
+          </p>
+          <button
+            onClick={() => navigate('/upgrade')}
+            style={{
+              background: '#E8A838', color: '#1a0f00', fontWeight: 700,
+              fontSize: 12, padding: '6px 18px', borderRadius: 999,
+              border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >Upgrade — $10/mo</button>
+        </div>
+      )}
+      <div style={{ padding: 'var(--space-8) var(--space-4)', maxWidth: 680, margin: '0 auto' }}>
 
       {/* Step 0: Choose path */}
       {step === 0 && (
@@ -189,16 +229,15 @@ export default function AdvisorPage() {
       {/* Step 1: Location + Capital */}
       {step === 1 && (
         <StepCard title="Where is your business, and how much capital do you have?" step={1} total={user ? 2 : 3} onBack={() => setStep(0)}>
-          <Select label="District" name="district" value={form.district} required
-            onChange={e => set('district', e.target.value)}
-            options={[{ value: '', label: 'Select district...' }, ...DISTRICTS.map(d => ({ value: d, label: d }))]}
+          {/* Map-based district + ward + street picker */}
+          <DistrictMapPicker
+            district={form.district}
+            ward={form.ward}
+            village={form.village}
+            onDistrictChange={v => set('district', v)}
+            onWardChange={v => set('ward', v)}
+            onVillageChange={v => set('village', v)}
           />
-          <Input label="Ward (optional)" name="ward" value={form.ward}
-            onChange={e => set('ward', e.target.value)}
-            placeholder="e.g. Bonyokwa — improves accuracy"
-          />
-          <Input label="Village / Area (optional)" name="village" value={form.village}
-            onChange={e => set('village', e.target.value)} placeholder="e.g. Kitunda" />
 
           {/* Capital is asked of EVERYONE here — it's specific to this
               business query, not a fixed profile attribute, so it can't
@@ -320,6 +359,7 @@ export default function AdvisorPage() {
           )}
         </div>
       )}
+      </div>
     </div>
   )
 }

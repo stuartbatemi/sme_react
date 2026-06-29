@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../context/AuthContext"
 import { Spotlight } from "../ui/spotlight"
 import { ChatBotWidget } from "../ui/chat-bot-widget"
-import darHeroImg from "../../assets/dar-hero.png"
+import { TextRepel } from "../ui/text-repel"
 
 interface HeroProps {
   showCreateAccount?: boolean
@@ -9,55 +10,154 @@ interface HeroProps {
 
 export function Hero({ showCreateAccount = true }: HeroProps) {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const goNext = () => user ? navigate("/advisor") : navigate("/register")
 
   return (
-    <section
-      className="relative isolate min-h-[640px] overflow-hidden bg-neutral-950"
-      style={{
-        backgroundImage: `linear-gradient(180deg, rgba(10,8,6,0.70) 0%, rgba(10,8,6,0.40) 40%, rgba(10,8,6,0.55) 70%, rgba(10,8,6,0.85) 100%), url(${darHeroImg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center 60%",
-      }}
-    >
-      <Spotlight className="-top-32 left-0 md:left-40 md:-top-10" fill="white" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/0 via-white/0 to-black/20" />
+    <section style={{
+      position: "relative",
+      overflow: "hidden",
+      background: "linear-gradient(160deg, #091818 0%, #0D3D3D 55%, #091818 100%)",
+      minHeight: "clamp(560px, 82vh, 820px)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}>
+      {/* Background layers */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background: "radial-gradient(ellipse 70% 60% at 50% 54%, rgba(13,110,110,0.30) 0%, transparent 70%)",
+      }} />
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        backgroundImage:
+          "linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px)," +
+          "linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px)",
+        backgroundSize: "52px 52px",
+      }} />
 
-      <div className="container relative z-10 mx-auto flex min-h-[640px] max-w-5xl flex-col items-center justify-center px-6 py-24 text-center">
-        {/* "Pop" tagline — what ORin actually is, in one breath */}
-        <div className="mb-6 max-w-xl rounded-2xl border border-accent/35 bg-accent/15 px-5 py-3 text-sm font-medium text-accent backdrop-blur-md animate-fadeUp">
-          <span className="font-semibold">ORin</span> is a data-driven business
-          advisor — it studies 33,000+ real Dar es Salaam enterprises to tell you,
-          in seconds, whether your idea will work, or which one will.
+      <Spotlight className="-top-32 left-0 md:left-40 md:-top-10" fill="white" />
+
+      {/* Content column */}
+      <div style={{
+        position: "relative", zIndex: 10,
+        width: "100%", maxWidth: 820,
+        padding: "80px 24px",
+        display: "flex", flexDirection: "column",
+        alignItems: "center", textAlign: "center",
+        gap: 0,
+      }}>
+
+        {/* Eyebrow pill */}
+        <div style={{
+          marginBottom: 32,
+          padding: "9px 22px", borderRadius: 999,
+          border: "1px solid rgba(232,168,56,0.36)",
+          background: "rgba(232,168,56,0.09)",
+          backdropFilter: "blur(10px)",
+          fontSize: 13, fontWeight: 500,
+          color: "#E8A838", lineHeight: 1.6,
+          maxWidth: 490,
+        }}>
+          <strong>ORin</strong> studies{" "}
+          <strong>64,000+</strong> real Dar es Salaam enterprises — and
+          tells you in seconds whether your idea will work.
         </div>
 
-        <h1 className="animate-fadeUp font-display text-4xl font-semibold leading-tight text-white drop-shadow-lg sm:text-5xl md:text-6xl">
-          Business Advisor
-        </h1>
+        {/* Headline — TextRepel */}
+        <TextRepel
+          text="Business Advisor"
+          radius={130}
+          strength={36}
+          stiffness={155}
+          damping={13}
+          mass={0.36}
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(2.8rem, 6.5vw, 4.5rem)",
+            fontWeight: 600,
+            color: "#ffffff",
+            letterSpacing: "-0.015em",
+            lineHeight: 1.1,
+            marginBottom: 14,
+            width: "100%",
+            justifyContent: "center",
+          }}
+        />
 
-        <p className="animate-fadeUp mt-5 max-w-xl text-base leading-relaxed text-white/90 drop-shadow sm:text-lg">
-          Find out if your business idea will succeed — or discover what business
-          to start — based on real data from 33,000+ enterprises across Dar es Salaam.
+        {/* Sub-line */}
+        <p style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "clamp(1.1rem, 2.6vw, 1.55rem)",
+          color: "#4DC9C9",
+          fontWeight: 400,
+          lineHeight: 1.2,
+          marginBottom: 22,
+        }}>for Dar es Salaam</p>
+
+        {/* Body */}
+        <p style={{
+          fontSize: "clamp(0.93rem, 1.9vw, 1.07rem)",
+          color: "rgba(255,255,255,0.76)",
+          lineHeight: 1.78,
+          maxWidth: 510,
+          marginBottom: 40,
+        }}>
+          Find out if your business idea will succeed — or discover which
+          business to start — based on real data across all five districts.
         </p>
 
-        <div className="animate-fadeUp mt-8 flex flex-wrap items-center justify-center gap-3">
+        {/* CTAs */}
+        <div style={{
+          display: "flex", flexWrap: "wrap",
+          gap: 12, justifyContent: "center",
+        }}>
           <button
-            onClick={() => navigate("/advisor")}
-            className="rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-accent-foreground shadow-[0_8px_24px_rgba(232,168,56,0.4)] transition hover:brightness-105 active:scale-[0.98]"
-          >
-            Get Free Advice →
-          </button>
+            onClick={goNext}
+            style={{
+              padding: "13px 36px", borderRadius: 999,
+              background: "#E8A838", color: "#1a0f00",
+              fontWeight: 700, fontSize: "0.95rem",
+              border: "none", cursor: "pointer", whiteSpace: "nowrap",
+              boxShadow: "0 8px 24px rgba(232,168,56,0.40)",
+              transition: "filter 180ms ease, transform 180ms ease",
+            }}
+            onMouseOver={e => {
+              (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)"
+              ;(e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"
+            }}
+            onMouseOut={e => {
+              (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1)"
+              ;(e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)"
+            }}
+          >Get Free Advice →</button>
+
           {showCreateAccount && (
             <button
               onClick={() => navigate("/register")}
-              className="rounded-full border border-white/50 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20 active:scale-[0.98]"
-            >
-              Create Premium Account
-            </button>
+              style={{
+                padding: "13px 36px", borderRadius: 999,
+                background: "rgba(255,255,255,0.08)",
+                color: "#ffffff", fontWeight: 600, fontSize: "0.95rem",
+                border: "1px solid rgba(255,255,255,0.30)",
+                cursor: "pointer", whiteSpace: "nowrap",
+                backdropFilter: "blur(6px)",
+                transition: "background 180ms ease, transform 180ms ease",
+              }}
+              onMouseOver={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.16)"
+                ;(e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"
+              }}
+              onMouseOut={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.08)"
+                ;(e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)"
+              }}
+            >Create Premium Account</button>
           )}
         </div>
       </div>
 
-      <ChatBotWidget onGetStarted={() => navigate("/advisor")} />
+      <ChatBotWidget onGetStarted={goNext} />
     </section>
   )
 }

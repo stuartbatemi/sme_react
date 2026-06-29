@@ -36,7 +36,7 @@ export function ChatBotWidget({ onGetStarted }: { onGetStarted?: () => void }) {
       { role: "user", text },
       {
         role: "bot",
-        text: "I'm a simple guide for now — for a real, data-backed answer, try the advisor below. It only takes a minute.",
+        text: "I'm a simple guide for now — sign up free and get a real, data-backed answer in seconds. Click \"Get Free Advice\" above to start!",
       },
     ])
     setInput("")

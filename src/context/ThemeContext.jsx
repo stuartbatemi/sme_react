@@ -88,8 +88,16 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     const tokens = THEMES[theme] || THEMES.grey
     const root = document.documentElement
-    Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(k, v))
+    Object.entries(tokens).forEach(([k, v]) => {
+      root.style.setProperty(k, v)
+      // Also set on body so every page picks up bg/text changes
+      document.body.style.setProperty(k, v)
+    })
     root.setAttribute('data-theme', theme)
+    document.body.setAttribute('data-theme', theme)
+    // Directly set bg + text on body so non-clr pages also respond
+    document.body.style.background = tokens['--clr-bg'] || ''
+    document.body.style.color = tokens['--clr-text'] || ''
     localStorage.setItem('sme_theme', theme)
   }, [theme])
 
